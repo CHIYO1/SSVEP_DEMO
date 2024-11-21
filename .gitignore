@@ -1,0 +1,8 @@
+# 忽略所有 .class 文件
+*.class
+
+# 忽略 target 目录
+target/
+
+# 忽略 bin 目录
+bin/
