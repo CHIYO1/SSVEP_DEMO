@@ -2,7 +2,7 @@
  * 这个文件包含一个数据库连接类，使用单例模式管理数据库连接实例。
  * 
  * @author 石振山
- * @version 1.0.0
+ * @version 1.2.1
  */
 package com.ssvep.config;
 
@@ -23,13 +23,14 @@ public class DatabaseConnection {
         config = new DatabaseConfig(); // 加载数据库配置
         try {
             // 注册 JDBC 驱动
-            Class.forName("com.mysql.cj.jdbc.Driver"); // 根据使用的数据库修改驱动类
+            Class.forName("com.mysql.cj.jdbc.Driver"); 
             // 创建数据库连接
             connection = DriverManager.getConnection(
-                    config.getDbUrl(), // 从配置中获取数据库 URL
-                    config.getDbUser(), // 从配置中获取数据库用户名
-                    config.getDbPassword() // 从配置中获取数据库密码
+                    config.getDbUrl(), 
+                    config.getDbUser(), 
+                    config.getDbPassword() 
             );
+            connection.setAutoCommit(false);  // 禁用自动提交,每次操作进行手动提交
             System.out.println("数据库连接成功！");
         } catch (ClassNotFoundException e) {
             System.out.println("找不到 JDBC 驱动！" + e.getMessage());
@@ -45,9 +46,9 @@ public class DatabaseConnection {
      */
     public static synchronized DatabaseConnection getInstance() {
         if (instance == null) {
-            instance = new DatabaseConnection(); // 创建新的实例
+            instance = new DatabaseConnection(); 
         }
-        return instance; // 返回单例实例
+        return instance; 
     }
 
     /**
@@ -56,7 +57,7 @@ public class DatabaseConnection {
      * @return 当前的数据库连接
      */
     public Connection getConnection() {
-        return connection; // 返回数据库连接
+        return connection; 
     }
 
     /**
@@ -66,9 +67,9 @@ public class DatabaseConnection {
     public void closeConnection() {
         if (connection != null) {
             try {
-                connection.close(); // 关闭数据库连接
+                connection.close(); 
             } catch (SQLException e) {
-                e.printStackTrace(); // 打印异常信息
+                e.printStackTrace(); 
             }
         }
     }

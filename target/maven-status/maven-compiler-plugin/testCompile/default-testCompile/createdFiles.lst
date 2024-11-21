@@ -1,0 +1,13 @@
+com\ssvep\dao\TreatmentRecommendationsDaoTest.class
+com\ssvep\dao\StimulusVideoDaoTest.class
+com\ssvep\controller\RecommendationControllerTest.class
+com\ssvep\dao\AnalysisReportsDaoTest.class
+com\ssvep\controller\LogsControllerTest.class
+com\ssvep\controller\StimulusVideoControllerTest.class
+com\ssvep\controller\TestRecordControllerTest.class
+com\ssvep\dao\TreatmentRecommendationsDaoTest$1.class
+com\ssvep\dao\UserDaoTest.class
+com\ssvep\dao\UserActionLogsDaoTest.class
+com\ssvep\controller\AnalysisReportControllerTest.class
+com\ssvep\controller\UserControllerTest.class
+com\ssvep\dao\TestRecordsDaoTest.class

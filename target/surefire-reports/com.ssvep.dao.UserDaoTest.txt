@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.ssvep.dao.UserDaoTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.033 s <<< FAILURE! - in com.ssvep.dao.UserDaoTest
+testGetAllUsers  Time elapsed: 0.01 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: There should be 2 users in the database ==> expected: <2> but was: <5>
+	at com.ssvep.dao.UserDaoTest.testGetAllUsers(UserDaoTest.java:42)
+

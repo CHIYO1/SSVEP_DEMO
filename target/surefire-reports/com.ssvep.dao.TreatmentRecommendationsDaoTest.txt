@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.ssvep.dao.TreatmentRecommendationsDaoTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.046 s <<< FAILURE! - in com.ssvep.dao.TreatmentRecommendationsDaoTest
+testGetRecommendationByUser  Time elapsed: 0.01 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: There should be 2 recommendations for user 45 ==> expected: <2> but was: <4>
+	at com.ssvep.dao.TreatmentRecommendationsDaoTest.testGetRecommendationByUser(TreatmentRecommendationsDaoTest.java:46)
+

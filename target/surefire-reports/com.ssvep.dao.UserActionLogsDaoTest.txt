@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.ssvep.dao.UserActionLogsDaoTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.054 s <<< FAILURE! - in com.ssvep.dao.UserActionLogsDaoTest
+testGetLogsByUser  Time elapsed: 0.018 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: There should be 2 logs for user with ID 45 ==> expected: <2> but was: <4>
+	at com.ssvep.dao.UserActionLogsDaoTest.testGetLogsByUser(UserActionLogsDaoTest.java:84)
+
