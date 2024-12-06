@@ -1,0 +1,8 @@
+2024-12-06 21:49:56.890 DEBUG [main][Log.java:10] - debug level
+2024-12-06 21:49:56.890 INFO [main][Log.java:11] - info level
+2024-12-06 21:51:41.275 INFO [main][MainService.java:31] - Tomcat 实例已创建，端口号：8080
+2024-12-06 21:51:41.316 INFO [main][MainService.java:35] - 应用上下文已创建，路径：E:\STUDY\2.0\JAVA\bigHomework\PROJECT\SSVEP_DEMO\.
+2024-12-06 21:51:41.329 INFO [main][MainService.java:66] - 启动 Tomcat...
+2024-12-06 21:51:41.693 INFO [main][MainService.java:68] - Tomcat 启动成功！
+2024-12-06 22:29:17.330 DEBUG [main][Log.java:10] - debug level
+2024-12-06 22:29:17.330 INFO [main][Log.java:11] - info level

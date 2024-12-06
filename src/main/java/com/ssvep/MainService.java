@@ -9,6 +9,8 @@ package com.ssvep;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.ssvep.controller.TestRecordController;
 import com.ssvep.controller.UserController;
@@ -20,13 +22,17 @@ import com.ssvep.controller.StimulusVideoController;
 import java.io.File;
 
 public class MainService {
+    private static final Logger logger = LogManager.getLogger(MainService.class);
+
     public static void main(String[] args) throws Exception {
         // 创建 Tomcat 实例
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
+        logger.info("Tomcat 实例已创建，端口号：8080");
 
         // 创建应用上下文
         Context ctx = tomcat.addContext("", new File(".").getAbsolutePath());
+        logger.info("应用上下文已创建，路径：{}", new File(".").getAbsolutePath());
 
         // 添加各个 Controller 的实例
         UserController userController = new UserController();
@@ -57,12 +63,11 @@ public class MainService {
 
         // 启动服务器
         try {
-            System.out.println("启动 Tomcat...");
+            logger.info("启动 Tomcat...");
             tomcat.start();
-            System.out.println("Tomcat 已启动！");
+            logger.info("Tomcat 启动成功！");
         } catch (Exception e) {
-            System.out.println("Tomcat 启动失败：" + e.getMessage());
-            e.printStackTrace();
+            logger.error("Tomcat 启动失败，错误信息：", e);
         }
         tomcat.getServer().await();
     }

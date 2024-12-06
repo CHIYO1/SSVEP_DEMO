@@ -1,9 +1,3 @@
-/**
- * 这个类负责处理用户的业务逻辑，并调用 UserDao 来执行数据访问操作。
- * 
- * @author 石振山
- * @version 1.1.1
- */
 package com.ssvep.service;
 
 import com.ssvep.dao.UserDao;
@@ -23,8 +17,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.mindrot.jbcrypt.BCrypt;
 import java.security.Key;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserService {
+    private static final Logger logger = LogManager.getLogger(UserService.class); // 日志记录器
     private UserDao userDao;
 
     public UserService() {
@@ -32,38 +29,61 @@ public class UserService {
     }
 
     public UserDto getUserById(Long id) {
+        logger.info("获取用户信息，用户ID: {}", id);
         Users user = userDao.getUserById(id);
+        if (user != null) {
+            logger.info("成功获取用户信息，用户ID: {}", id);
+        } else {
+            logger.warn("未找到用户信息，用户ID: {}", id);
+        }
         return convertToDto(user);
     }
 
     public UserDto getUserByUsername(String username) {
+        logger.info("获取用户信息，用户名: {}", username);
         Users user = userDao.getUserByUsername(username);
+        if (user != null) {
+            logger.info("成功获取用户信息，用户名: {}", username);
+        } else {
+            logger.warn("未找到用户信息，用户名: {}", username);
+        }
         return convertToDto(user);
     }
 
     public void createUser(UserDto userDto) throws SQLException {
+        logger.info("创建用户，用户名: {}", userDto.getUsername());
         String pw = userDto.getPassword();
-        String PasswordHash = BCrypt.hashpw(pw, BCrypt.gensalt());
-        userDto.setPassword(PasswordHash);
+        String passwordHash = BCrypt.hashpw(pw, BCrypt.gensalt());
+        userDto.setPassword(passwordHash);
         Users user = convertToEntity(userDto);
+
         userDao.save(user);
+        logger.info("成功创建用户，用户名: {}", userDto.getUsername());
     }
 
     public void updateUser(UserDto userDto) throws SQLException {
+        logger.info("更新用户，用户名: {}", userDto.getUsername());
         String pw = userDto.getPassword();
-        String PasswordHash = BCrypt.hashpw(pw, BCrypt.gensalt());
-        userDto.setPassword(PasswordHash);
+        String passwordHash = BCrypt.hashpw(pw, BCrypt.gensalt());
+        userDto.setPassword(passwordHash);
         Users user = convertToEntity(userDto);
+
         userDao.update(user);
+        logger.info("成功更新用户，用户名: {}", userDto.getUsername());
     }
 
     public void deleteUser(Long id) throws SQLException {
+        logger.info("删除用户，用户ID: {}", id);
         userDao.delete(id);
+        logger.info("成功删除用户，用户ID: {}", id);
     }
 
     public List<UserDto> getAllUsers() {
+        logger.info("获取所有用户信息");
         List<Users> users = userDao.getAll();
-        return users.stream().map(this::convertToDto).collect(Collectors.toList());
+        List<UserDto> userDtos = users.stream().map(this::convertToDto).collect(Collectors.toList());
+        logger.info("成功获取所有用户信息，数量: {}", userDtos.size());
+        return userDtos;
     }
 
     private UserDto convertToDto(Users user) {
@@ -91,9 +111,9 @@ public class UserService {
             return false; // 用户名不存在
         }
 
-        String PasswordHash = userDto.getPassword();
+        String passwordHash = userDto.getPassword();
         // 使用 BCrypt 来验证密码
-        return BCrypt.checkpw(password, PasswordHash);
+        return BCrypt.checkpw(password, passwordHash);
     }
 
     // 生成密钥

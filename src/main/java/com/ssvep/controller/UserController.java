@@ -1,9 +1,3 @@
-/**
- * 这个类负责处理用户相关的 HTTP 请求并调用 UserService 来执行相应的业务逻辑。
- * 
- * @author 石振山
- * @version 2.3.1
- */
 package com.ssvep.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,18 +16,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet("/users")
 public class UserController extends HttpServlet {
+    private static final Logger logger = LogManager.getLogger(UserController.class);
     private UserService userService;
 
     @Override
     public void init() throws ServletException {
         userService = new UserService();
+        logger.info("用户管理控制器已初始化。");
     }
 
     protected void doOptions(HttpServletRequest request, HttpServletResponse response) {
-
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "*");
@@ -43,6 +40,7 @@ public class UserController extends HttpServlet {
         response.setHeader("Access-Control-Request-Headers",
                 "Authorization,Origin, X-Requested-With,content-Type,Accept");
         response.setHeader("Access-Control-Expose-Headers", "*");
+        logger.info("OPTIONS请求已处理，跨域头部已设置。");
     }
 
     @Override
@@ -61,20 +59,24 @@ public class UserController extends HttpServlet {
 
                 if (userDto != null) {
                     out.write(objectMapper.writeValueAsString(userDto));
+                    logger.info("成功获取ID为 {} 的用户信息。", id);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    out.write("{\"error\":\"User not found\"}");
+                    out.write("{\"error\":\"未找到用户\"}");
+                    logger.warn("未找到ID为 {} 的用户。", id);
                 }
             } else {
                 List<UserDto> users = userService.getAllUsers();
                 out.write(objectMapper.writeValueAsString(users));
+                logger.info("成功获取所有用户信息。");
             }
 
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            e.printStackTrace();
+            logger.error("请求处理时发生错误：", e);  // 使用日志记录异常
             try (PrintWriter out = resp.getWriter()) {
-                out.write("{\"error\":\"An error occurred while processing the request\"}");
+                out.write("{\"error\":\"处理请求时发生错误\"}");
+                logger.error("获取用户信息时发生错误：", e);
             }
         }
     }
@@ -108,7 +110,6 @@ public class UserController extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         if ("register".equalsIgnoreCase(action)) {
-
             String username = json.optString("username", "");
             String password = json.optString("password", "");
             String name = json.optString("name", "");
@@ -122,12 +123,13 @@ public class UserController extends HttpServlet {
             userDto.setRole(role);
 
             try {
-            userService.createUser(userDto);
-            resp.getWriter().write("{\"status\":\"success\",\"message\":\"用户创建成功\"}");
-
+                userService.createUser(userDto);
+                resp.getWriter().write("{\"status\":\"success\",\"message\":\"用户创建成功\"}");
+                logger.info("用户 {} 创建成功。", username);
             } catch (Exception e) {
-            e.printStackTrace();
-            resp.getWriter().write("{\"status\":\"error\",\"message\":\"创建用户失败\"}");
+                logger.error("请求处理时发生错误：", e);  // 使用日志记录异常
+                resp.getWriter().write("{\"status\":\"error\",\"message\":\"创建用户失败\"}");
+                logger.error("创建用户 {} 失败：", username, e);
             }
 
         } else if ("login".equalsIgnoreCase(action)) {
@@ -140,19 +142,20 @@ public class UserController extends HttpServlet {
 
                 if (authenticated) {
                     String jwtToken = userService.generateToken(username);
-
-                    // 返回JSON响应，包括JWT令牌
                     resp.getWriter()
                             .write("{\"status\":\"success\",\"message\":\"登录成功\",\"token\":\"" + jwtToken
                                     + "\"}");
+                    logger.info("用户 {} 登录成功，生成JWT令牌。", username);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     resp.getWriter().write("{\"status\":\"error\",\"message\":\"用户名或密码错误\"}");
+                    logger.warn("用户 {} 登录失败，用户名或密码错误。", username);
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("请求处理时发生错误：", e);  // 使用日志记录异常
                 resp.getWriter().write("{\"status\":\"error\",\"message\":\"登录失败\"}");
+                logger.error("用户 {} 登录失败：", username, e);
             }
         }
     }
@@ -176,19 +179,16 @@ public class UserController extends HttpServlet {
 
         try {
             userService.updateUser(userDto);
-
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-
             resp.getWriter().write("{\"status\":\"success\",\"message\":\"用户更新成功\"}");
-
+            logger.info("用户ID为 {} 的信息更新成功。", userId);
         } catch (Exception e) {
-            e.printStackTrace();
-
+            logger.error("请求处理时发生错误：", e);  // 使用日志记录异常
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-
             resp.getWriter().write("{\"status\":\"error\",\"message\":\"更新用户失败\"}");
+            logger.error("更新用户ID为 {} 的信息失败：", userId, e);
         }
     }
 
@@ -200,20 +200,16 @@ public class UserController extends HttpServlet {
 
         try {
             userService.deleteUser(userId);
-
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-
             resp.getWriter().write("{\"status\":\"success\",\"message\":\"用户删除成功\"}");
-
+            logger.info("用户ID为 {} 删除成功。", userId);
         } catch (Exception e) {
-            e.printStackTrace();
-
+            logger.error("请求处理时发生错误：", e);  // 使用日志记录异常
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
-
             resp.getWriter().write("{\"status\":\"error\",\"message\":\"删除用户失败\"}");
+            logger.error("删除用户ID为 {} 失败：", userId, e);
         }
     }
-
 }
